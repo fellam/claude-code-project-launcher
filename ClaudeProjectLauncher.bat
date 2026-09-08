@@ -31,11 +31,18 @@ if not exist "%TARGET_DIR%" (
 :: Derive session name from directory name
 for %%F in ("%TARGET_DIR%") do set "SESSION_NAME=%%~nxF"
 
+:: Reasoning effort - defaults to "medium" to reduce token/credit usage vs
+:: Claude Code's own default of "high". Override by passing it as the 2nd
+:: argument (e.g. ClaudeProjectLauncher.bat "C:\path\to\project" high).
+set "EFFORT=%~2"
+if "%EFFORT%"=="" set "EFFORT=medium"
+
 echo.
 echo ================================================================
 echo  Project:  %TARGET_DIR%
 echo  Session:  %SESSION_NAME%
-echo  Flags:    -c --remote-control "%SESSION_NAME%"
+echo  Effort:   %EFFORT%
+echo  Flags:    -c --remote-control "%SESSION_NAME%" --effort %EFFORT%
 echo ================================================================
 echo.
 
@@ -43,7 +50,7 @@ echo.
 :: genuinely first-ever run in this folder - fall back to a fresh session
 :: in that case instead of just exiting, so this script works unchanged
 :: on both first and later runs.
-set "CLAUDE_CMD=call claude -c --remote-control \"%SESSION_NAME%\" || call claude --remote-control \"%SESSION_NAME%\""
+set "CLAUDE_CMD=call claude -c --remote-control \"%SESSION_NAME%\" --effort %EFFORT% || call claude --remote-control \"%SESSION_NAME%\" --effort %EFFORT%"
 
 where wt.exe >nul 2>&1
 if %errorLevel% equ 0 (

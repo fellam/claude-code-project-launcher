@@ -15,14 +15,25 @@ which terminal window is which project.
 3. Opens a new [Windows Terminal](https://aka.ms/terminal) tab (or a plain `cmd` window
    if Windows Terminal isn't installed) in that folder, running:
    ```
-   claude -c --remote-control "my-app"
+   claude -c --remote-control "my-app" --effort medium
    ```
    `-c` continues the most recent conversation in that folder if one exists. On a
    genuinely first-ever run there (no prior conversation), that fails — the script
    automatically falls back to a fresh session instead of just exiting:
    ```
-   claude --remote-control "my-app"
+   claude --remote-control "my-app" --effort medium
    ```
+
+## Reasoning effort
+
+Claude Code's own default reasoning effort is `high`. This launcher starts sessions at
+`medium` instead, to reduce token/credit usage — useful if you run several
+long-lived agent sessions in parallel and don't need `high` for most of their work.
+Override it by passing a second argument:
+```
+ClaudeProjectLauncher.bat "C:\path\to\your\project" high
+```
+Valid values (per `claude --effort`): `low`, `medium`, `high`, `xhigh`, `max`.
 
 ## Why
 
