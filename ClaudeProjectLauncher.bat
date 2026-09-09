@@ -46,6 +46,13 @@ echo  Flags:    -c --remote-control "%SESSION_NAME%" --effort %EFFORT%
 echo ================================================================
 echo.
 
+:: When this launcher is itself invoked by an agent's shell tool (rather than
+:: typed by hand at a terminal), the spawned session inherits a
+:: CLAUDE_CODE_CHILD_SESSION marker that disables transcript saving entirely
+:: - so -c never finds anything to continue, even after real conversations.
+:: Force persistence regardless of how this script was invoked.
+set "CLAUDE_CODE_FORCE_SESSION_PERSISTENCE=1"
+
 :: -c (continue) fails with "No conversation found to continue" on a
 :: genuinely first-ever run in this folder - fall back to a fresh session
 :: in that case instead of just exiting, so this script works unchanged
